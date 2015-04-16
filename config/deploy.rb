@@ -25,23 +25,29 @@ set :tmp_dir, "/home/#{fetch(:application)}/tmp"
 
 namespace :deploy do
 
- %w{start stop restart}.each do |command|
-    desc "#{command} unicorn server"
-    task command do
-      on roles(:app) do
-        execute "service unicorn_#{fetch(:application)} #{command}"
-      end
+  desc "Start the Unicorn process when it isn't already running." 
+    task :start do 
+      run "cd #{current_path} && #{current_path}/bin/unicorn -Dc #{shared_path}/config/unicorn.rb -E #{rails_env}" 
     end
-  end
+
+  desc "Initiate a rolling restart by telling Unicorn to start the new application code and kill the old process when done." 
+    task :restart do 
+      run "kill -USR2 $(cat #{shared_path}/pids/unicorn.pid)" 
+    end
+
+  desc "Stop the application by killing the Unicorn process" 
+    task :stop do 
+      run "kill $(cat #{shared_path}/pids/unicorn.pid)" 
+    end
+
   after :finishing, :restart
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
     end
   end
 
 end
+
+
+

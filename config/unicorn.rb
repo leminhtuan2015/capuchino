@@ -8,12 +8,12 @@ pid "/home/framgia/capuchino/pids/unicorn.pid"
 # Path to logs
 # stderr_path "/path/to/log/unicorn.log"
 # stdout_path "/path/to/log/unicorn.log"
-stderr_path "/var/www/my_app/log/unicorn.log"
-stdout_path "/var/www/my_app/log/unicorn.log"
+stderr_path "/home/framgia/capuchino/log/unicorn.log"
+stdout_path "/home/framgia/capuchino/log/unicorn.log"
 
 # Unicorn socket
 listen "/tmp/unicorn.capuchino.sock"
-listen "/tmp/unicorn.myapp.sock"
+listen "/tmp/unicorn.capuchino.sock"
 
 # Number of processes
 # worker_processes 4
