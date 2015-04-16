@@ -37,11 +37,13 @@ set :deploy_to, '/home/framgia/capuchino'
 namespace :deploy do
 
   namespace :assets do
-    task :precompile, :roles => assets_role, :except => { :no_release => true } do
-      run <<-CMD.compact
-        cd -- #{latest_release.shellescape} &&
-        #{rake} RAILS_ENV=#{rails_env.to_s.shellescape} #{asset_env} assets:precompile
-      CMD
+    before :backup_manifest, 'deploy:assets:create_manifest_json'
+    task :create_manifest_json do
+      on roles :web do
+        within release_path do
+          execute :mkdir, release_path.join('assets_manifest_backup')
+        end
+      end
     end
   end
 
